@@ -55,10 +55,10 @@ export async function main() {
     0.00, 1.00, 0.0, 0.0,
   ]
 
-  const width = 400
+  const width = 600
   const height = 400
   const fov = Math.PI / 4
-  const aspect = height / width
+  const aspect = width / height
   const near = 0.1
   const far = 10
 
@@ -95,8 +95,8 @@ export async function main() {
   const weightLocation = gl.getAttribLocation(program, "aWeight")
   const jointLocation = gl.getAttribLocation(program, "aJoint")
 
-  const jointDeformationLocation0 = gl.getUniformLocation(program, "uJointMatrix[0]")
-  const jointDeformationLocation1 = gl.getUniformLocation(program, "uJointMatrix[1]")
+  const jointMatrixLocation0 = gl.getUniformLocation(program, "uJointMatrix[0]")
+  const jointMatrixLocation1 = gl.getUniformLocation(program, "uJointMatrix[1]")
 
   gl.useProgram(program)
   gl.uniformMatrix4fv(mvpLocation, false, modelViewProjectionMatrix)
@@ -123,14 +123,14 @@ export async function main() {
   gl.bindBuffer(gl.ARRAY_BUFFER, null)
 
 
-  async function render() {
+  function render() {
     const jointDeformationMatrix0 = mat4.identity(mat4.create())
-    gl.uniformMatrix4fv(jointDeformationLocation0, false, jointDeformationMatrix0)
+    gl.uniformMatrix4fv(jointMatrixLocation0, false, jointDeformationMatrix0)
 
     const angle = Math.PI / 4 * Math.sin(performance.now() / 1000)
     const jointDeformationMatrix1 = mat4.identity(mat4.create())
     mat4.rotate(jointDeformationMatrix1,  jointDeformationMatrix1, angle, [0, 0, 1])
-    gl.uniformMatrix4fv(jointDeformationLocation1, false, jointDeformationMatrix1)
+    gl.uniformMatrix4fv(jointMatrixLocation1, false, jointDeformationMatrix1)
 
     const indexBuffer = gl.createBuffer()
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
